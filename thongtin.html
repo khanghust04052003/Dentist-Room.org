@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PERSONAL INFORMATION</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+    <link rel="stylesheet" href="css/sign.css">
+  <link rel="stylesheet" href="./css/allin.css">
+
+
+</head>
+<body>
+    <div class="back-icon">
+        <a class="back_icon-wrap" href="javascript:history.go(-1)">
+            <i class="far fa-times-circle"></i>
+        </a>
+    </div>
+
+</div>
+<div id="content">
+    <div class="container">
+
+        <div class="row">
+            <div class="col-md-auto" style="margin: auto">
+                <div id="auth-container" class="info_person">
+                    <label for="auth-form" class="label-header">PERSONAL INFORMATION:</label>
+                    <form id="auth-form" action="/submit-form" method="post" onsubmit="return submitForm()">
+                        <div class="form-group">
+                            <label for="name">Name:</label>
+                            <input type="text" id="name" name="name" placeholder="name" required >
+                        </div>
+                        <div class="form-group">
+                            <label for="birthday">Date of birthday:</label>
+                            <input type="date" id="birthday" name="birthday" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" placeholder="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="numberphone">Phone number:</label>
+                            <input type="tel" id="numberphone" name="numberphone" placeholder="phone number">
+                        </div>   
+                        
+                        
+            
+            
+                        <div id="messageContainer"></div>
+                        <input type="submit" class="btn btn-sign" id="submitButton" value="Submit">
+            
+                    </form>
+                
+                
+                </div>
+            </div>
+        
+        
+        
+        </div>
+        
+
+    </div>
+
+    <div class="container">
+        <div class="row" id="info_medi-table">
+            <div class="col">
+                <div id="info_patient-table">
+        
+                    <h2>Medicine Information</h2>
+                    <table id="table_patient">
+                    <thead>
+                        <tr>
+                            <th>Disease Name</th>
+                            <th>Medicine Name</th>
+                            <th>Dosage</th>
+                            <th>Price</th>
+            
+                        </tr>
+                    </thead>
+                    <tbody id="info" >
+        
+                    </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="info_app">
+  
+        <div class="row">
+          <div class="col">
+            <h2>Appointment Information</h2>
+            <table id="table_patient">
+              <thead>
+                <tr>
+
+                    <th>Appointment Date</th>
+                    <th>Start Time</th>
+                    <th>Doctor ID</th>
+                    <th>Phone Number Doctor</th>
+      
+                </tr>
+            </thead>
+            <tbody id="info-app">
+
+            </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+</div>
+
+
+<script src="js/jquery-3.4.1.min.js"></script>
+<!-- bootstrap js -->
+<script src="js/bootstrap.js"></script>
+<!-- nice select -->
+
+
+<!-- datepicker -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
+
+<script>
+    const info = document.getElementById('info');
+    const info_app = document.getElementById('info-app');
+    var id;
+    window.onload = function(){
+        
+        fetch('/get-info')
+            .then(response => response.json())
+            .then(data => {
+                let info = ['name', 'birthday', 'email' , 'numberphone', 'idperson'];
+                let getdate = [`Full Name`, 'Birth', 'email' , `Phone Number`, `Patient ID`];
+
+                for (let i = 0; i < info.length; i++) {
+                    if(info[i] == 'birthday'){
+                        formatDate(data[0][`${getdate[i]}`])
+
+                        // Tạo chuỗi mới theo định dạng "yyyy-MM-dd"
+                        valu = formatDate(data[0][`${getdate[i]}`]);
+                        let a = document.getElementById(`${info[i]}`);     
+                        if(a!=undefined){
+                            a.value = valu;
+
+                        }
+                    }else{
+                        let a = document.getElementById(`${info[i]}`);    
+                        if(a!=undefined){
+
+                            a.value = data[0][`${getdate[i]}`];
+                        } 
+                    }
+
+                }
+                
+
+                } )
+            .catch(error => console.log('Error fetching options:', error));
+        }
+    fetch(`/get-medi`)
+        .then(response => response.json())
+        .then(data => {
+            if(data.length > 0){
+            console.log(data);
+            data.forEach(medi => {
+                console.log(medi);
+                const infoMediPrice = document.createElement('tr')
+                infoMediPrice.innerHTML = `                
+
+                <th>${medi[`Disease Name`]}</th>
+                <th>${medi[`Medicine Name`]}</th>
+                <th>${medi[`Dosage`]}</th>
+                <th>${medi[`Price`]}</th>
+                `
+                info.appendChild(infoMediPrice);
+
+            });
+            }
+        
+        })
+        .catch(error => console.log('Error:', error));
+
+    fetch(`/get-app-patient`)
+        .then(response => response.json())
+        .then(data => {
+            
+        if(data.length > 0){
+            let date = formatDate([data[0][`Appoint Date`]]);
+            const infoAppWithDoctor = document.createElement('tr');
+            infoAppWithDoctor.innerHTML = `                
+            <th>${date}</th>
+            <th>${data[0][`Start Time`]}</th>
+            <th>${data[0][`FullName`]}</th>
+            <th>${data[0][`PhoneNumber`]}</th>
+            `
+            info_app.appendChild(infoAppWithDoctor);
+        }
+            
+        })
+        .catch(error => console.log('Error:', error)); 
+
+
+    function submitForm() {
+      var formData = {
+        name: $("#name").val(),
+        email: $("#email").val(),
+        birthday: $("#birthday").val(),
+        numberphone: $("#numberphone").val(),
+        idperson: $("#idperson").val()
+      };
+      event.preventDefault();
+      $.ajax({
+        type: "POST",
+        url: "/submit-form",
+        data: formData,
+        success: function(response) {
+            // Hiển thị thông báo dựa vào phản hồi từ server
+            $('#messageContainer').html('<p>' + response + '</p>');
+        },
+            error: function(error) {
+            console.error('Error:', error);
+        },
+        // complete: function(response) {
+        //     alert('Gửi thông tin thành công');
+        // }
+      });
+    }
+
+    function formatDate(date) {
+
+
+
+        let mysqlDateString = date;
+
+        // Tạo một đối tượng Date từ chuỗi
+        let dateObject = new Date(mysqlDateString);
+
+        // Lấy thông tin ngày, tháng, năm
+        let year = dateObject.getFullYear();
+        let month = (dateObject.getMonth() + 1).toString().padStart(2, '0'); // Thêm '0' phía trước nếu cần
+        let day = dateObject.getDate().toString().padStart(2, '0'); // Thêm '0' phía trước nếu cần
+
+        // Tạo chuỗi mới theo định dạng "yyyy-MM-dd"
+        return `${year}-${month}-${day}`;   
+        }
+
+
+
+</script>
+
+
+
+</body>
+</html>

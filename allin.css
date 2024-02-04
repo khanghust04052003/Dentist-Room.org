@@ -1,0 +1,184 @@
+.info_person #auth-form{
+    display: block;
+}
+
+
+/* form {
+    max-width: 400px;
+    margin: 0 auto;
+} */
+
+.label-header{
+    text-align: center;
+}
+
+
+#table_doctor,#table_patient{
+border-collapse: collapse;
+width: 100%;
+background-color: white;
+}
+
+#info_patient{
+margin-top: 72px;
+margin-bottom: 72px;
+
+}
+#info_patient h2{
+    text-align: center;
+}
+#info_medi{
+    width: 100%;
+    margin-bottom: 72px;
+}
+
+#info_medi h2{
+    text-align: center;
+}
+
+th, td {
+border: 1px solid #ddd;
+padding: 8px;
+text-align: center;
+}
+
+th {
+background-color: #f2f2f2;
+}
+.btn-submit{
+padding: 10px 20px;
+}
+.check:hover{
+cursor: pointer;
+}
+.container{
+    margin-top: 200px;
+}
+#content{
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+#errorMessage{
+    margin: 10px 0 10px 5px;
+    padding: 10px 20px;
+  }
+
+  #table_doctor,#table_patient{
+    border-collapse: collapse;
+    width: 100%;
+    background-color: white;
+  }
+
+  #info_patient{
+    margin-top: 72px;
+    display: none;
+  }
+  #info_medi{
+    display: none;
+    margin-top: 72px;
+    margin-bottom: 72px;
+  }
+  #schedule_info{
+    margin-top: 72px;
+
+  }
+
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+
+  th {
+    background-color: #f2f2f2;
+  }
+  .btn-submit{
+    padding: 10px 20px;
+    color: white;
+    background-color: black;
+    margin-bottom: 72px;
+  }
+  .btn-submit:hover{
+    cursor: pointer;
+    color: aqua;
+  }
+  .check:hover{
+    cursor: pointer;
+  }
+  #content{
+          width: 100%;
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+      }
+
+
+
+    /* Style cho ô select */
+    .select_check {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+
+    /* Style cho ô nhập liệu tìm kiếm */
+    .search_input-name {
+      width: 100%;
+      padding: 5px;
+    }
+
+    /* Style cho danh sách các option */
+    .select-options {
+      display: none;
+      position: absolute;
+      z-index: 1;
+      border: 1px solid #ccc;
+      max-height: 150px;
+      overflow-y: auto;
+      width: 100%;
+      background: white;
+    }
+
+    /* Style cho các option */
+    .select-options div {
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    /* Hiển thị option khi ô select được chọn */
+    .select_check.active .select-options {
+      display: block;
+    }
+
+    #doctor_app_pan{
+      margin-top: 100px;
+      margin-bottom: 200px;
+      display: none;
+    }
+
+    #doctor_app_pan h2{
+      text-align: center;
+
+    }
+
+    #info_app{
+      margin-bottom: 200px;
+    }
+
+    h2{
+      text-align: center;
+      color: white;
+    }
+
+    
+#header_patient{
+  color: white;
+}
+
+#info_table{
+  margin-top: 0;
+}

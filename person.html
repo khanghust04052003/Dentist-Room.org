@@ -32,16 +32,17 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css">
   <!-- Custom styles for this template -->
   <link href="css/style.css" rel="stylesheet" />
+
+  <link rel="stylesheet" href="./css/main.css">
   <!-- responsive style -->
   <link href="css/responsive.css" rel="stylesheet" />
-  <link rel="stylesheet" href="./css/main.css">
 
-  <link rel="stylesheet" href="./js/owl.carousel.min.css">
-  <link rel="stylesheet" href="./js/owl.theme.default.min.css">
+
 
 </head>
 
 <body>
+
 
 
   <div class="hero_area" id="home">
@@ -75,18 +76,26 @@
                   </li>    
                   <li class="nav-item">
                     <a class="nav-link" href="#blog">Blog</a>
-                  </li>                
-
+                  </li>     
+                  <li class="nav-item " id="info_person">
+                    <a class="nav-link" href="/thongtin">Info Person</a>
+                  </li>
+                  <li class="nav-item " id="doctorcheck" style="display:none">
+                    <a class="nav-link" href="/doctorcheck">Doctor calendar</a>
+                  </li>             
+                  <li class="nav-item " id="listpatient" style="display:none">
+                    <a class="nav-link" href="/listpatient">listpatient</a>
+                  </li>             
                 </ul>
               </div>
               <div class="quote_btn-container">
-                <a href="login" id="BTN-Login">
-          
+
+                <a href="/" id="BTN-Logout" >
+  
                   <span>
-                    Login / Sign up
+                    Logout
                   </span>
                 </a>
-
 
               </div>
             </div>
@@ -121,10 +130,10 @@
       </p>
 
       <form action="" class="hero-form">
-        <input type="email" name="email_address" aria-label="email" placeholder="Nhập Email Của Bạn..." required
+        <input type="text" name="email_address" aria-label="email" placeholder="Nhập SDT của bạn.." required
           class="email-field">
 
-        <button type="submit" class="btn">LIÊN HỆ VỚI TÔI</button>
+        <button  class="btn"><a href="/login" style="width: 100%;">LIÊN HỆ VỚI TÔI</a></button>
       </form>
 
     </div>
@@ -467,15 +476,12 @@
 
   </div>
 </section>
-  <!-- end info_section -->
-  <script src="./js/jquery-3.4.1.min.js"></script>
-
-
 
 
 
 
   <!-- jQery -->
+  <script src="js/jquery-3.4.1.min.js"></script>
   <!-- bootstrap js -->
   <script src="js/bootstrap.js"></script>
   <!-- nice select -->
@@ -488,106 +494,120 @@
   <script src="js/custom.js"></script>
   <script src="./app.js"></script>
 
-
- 
   <script>
-
-document.addEventListener('DOMContentLoaded', function () {
-  function createAndAppendItem(data) {
-    const itemDiv = document.createElement('div');
-    itemDiv.className = 'item'; // Owl Carousel class for items
-
-    const boxDiv = document.createElement('div');
-    boxDiv.className = 'box';
-
-    // Add data to the box
-    boxDiv.innerHTML = `
-    <a class="img-box" href="/doctor?ID=${data[`Doctor ID`]}">
-                <img src="images/team${data[`Doctor ID`]}.jpg" alt="" />
-              </a>
-              <div class="detail-box">
-                <h5>
-                  ${data[`FullName`]}
-                </h5>
-                <h6>
-                  MBBS
-                </h6>
-                <div class="social_box">
-                  <a href="">
-                    <i class="fa fa-facebook" aria-hidden="true"></i>
-                  </a>
-                  <a href="">
-                    <i class="fa fa-twitter" aria-hidden="true"></i>
-                  </a>
-                  <a href="">
-                    <i class="fa fa-linkedin" aria-hidden="true"></i>
-                  </a>
-                  <a href="">
-                    <i class="fa fa-instagram" aria-hidden="true"></i>
-                  </a>
-                </div>
-              </div>
-    `;
-
-    // Append the box to the item
-    itemDiv.appendChild(boxDiv);
-
-    // Append the item to Owl Carousel
-    $('.team_carousel').owlCarousel('add', itemDiv);
-}
+  const listpatient= document.getElementById("listpatient")
   
-  
-  fetch(`/options`)
-      .then(response => response.json())
-      .then(data => {
-        data.forEach(item =>{
-          createAndAppendItem(item);
-        });
+  document.addEventListener("DOMContentLoaded", function() {
+    // Mã JavaScript của bạn sẽ chạy ở đây
+    fetch(`/Login-doctor`)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          if(data){
+            info_person.style.display = 'none';
+            doctorcheck.style.display = 'block';
+            listpatient.style.display = 'block';
+          }else{
+            doctorcheck.style.display = 'none';
+            info_person.style.display = 'block';
+            listpatient.style.display = 'none';
 
-    })
-    .catch(error => console.log('Error:', error));
+          }
+      })
+      .catch(error => console.log('Error:', error));
+    });
 
-    fetch(`/options-out`)
-      .then(response => response.json())
-      .then(data => {
-
-
-    })
-    .catch(error => console.log('Error:', error));
-
-    $('.team_carousel').owlCarousel({
-    loop: true,
-    margin: 15,
-    dots: true,
-    autoplay: true,
-    autoplayTimeout: 1500,
-    navText: [
-        '<i class="fa fa-angle-left" aria-hidden="true"></i>',
-        '<i class="fa fa-angle-right" aria-hidden="true"></i>'
-    ],
-    autoplayHoverPause: true,
-    responsive: {
-        0: {
-            items: 1,
-            margin: 0
-        },
-        576: {
-            items: 2,
-        },
-        992: {
-            items: 3
-        }
-    }
-})
-});
-
-const item = document.getElementsByClassName('item'); 
-if (item[0]){
-  item[0].click();
-}
   </script>
 
 
+<script>
+
+  document.addEventListener('DOMContentLoaded', function () {
+    function createAndAppendItem(data) {
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'item'; // Owl Carousel class for items
+  
+      const boxDiv = document.createElement('div');
+      boxDiv.className = 'box';
+  
+      // Add data to the box
+      boxDiv.innerHTML = `
+      <a class="img-box" href="/doctor?ID=${data[`Doctor ID`]}">
+                  <img src="images/team${data[`Doctor ID`]}.jpg" alt="" />
+                </a>
+                <div class="detail-box">
+                  <h5>
+                    ${data[`FullName`]}
+                  </h5>
+                  <h6>
+                    MBBS
+                  </h6>
+                  <div class="social_box">
+                    <a href="">
+                      <i class="fa fa-facebook" aria-hidden="true"></i>
+                    </a>
+                    <a href="">
+                      <i class="fa fa-twitter" aria-hidden="true"></i>
+                    </a>
+                    <a href="">
+                      <i class="fa fa-linkedin" aria-hidden="true"></i>
+                    </a>
+                    <a href="">
+                      <i class="fa fa-instagram" aria-hidden="true"></i>
+                    </a>
+                  </div>
+                </div>
+      `;
+  
+      // Append the box to the item
+      itemDiv.appendChild(boxDiv);
+  
+      // Append the item to Owl Carousel
+      $('.team_carousel').owlCarousel('add', itemDiv);
+  }
+    
+    
+    fetch(`/options`)
+        .then(response => response.json())
+        .then(data => {
+          data.forEach(item =>{
+            createAndAppendItem(item);
+          });
+  
+      })
+      .catch(error => console.log('Error:', error));
+  
+      $('.team_carousel').owlCarousel({
+      loop: true,
+      margin: 15,
+      dots: true,
+      autoplay: true,
+      autoplayTimeout: 1500,
+      navText: [
+          '<i class="fa fa-angle-left" aria-hidden="true"></i>',
+          '<i class="fa fa-angle-right" aria-hidden="true"></i>'
+      ],
+      autoplayHoverPause: true,
+      responsive: {
+          0: {
+              items: 1,
+              margin: 0
+          },
+          576: {
+              items: 2,
+          },
+          992: {
+              items: 3
+          }
+      }
+  })
+  });
+  
+  const item = document.getElementsByClassName('item'); 
+  if (item[0]){
+    item[0].click();
+  }
+    </script>
 
 </body>
 

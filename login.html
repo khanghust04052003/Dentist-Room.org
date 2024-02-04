@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login/Sign up</title>
+    <!-- bootstrap core css -->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+    <link rel="stylesheet" href="./css/sign.css">
+
+</head>
+<body>
+
+
+    <div class="back-icon">
+        <a class="back_icon-wrap" href="javascript:history.go(-1)">
+            <i class="far fa-times-circle"></i>
+        </a>
+    </div>
+
+    <div class="row">
+
+
+
+        <div id="auth-container">
+            <div id="auth-buttons">
+                <button id="signin-button" class="auth-button" onclick="toggleAuthForm('signin')">Login</button>
+                <button id="register-button" class="auth-button" onclick="toggleAuthForm('register')">Sign Up</button>
+            </div>
+            <!-- onclick="return handleSubmit()" -->
+            <form id="form-login" action="/login-check" method="post"  >
+                <div class="form-group">
+                    <label for="form-username1">Username:</label>
+                    <input type="text" id="form-username1"  name="username" placeholder="Username" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="form-password1">Password:</label>
+                    <input type="password" id="form-password1"  name="password" placeholder="Password" class="form-control" required>
+                </div>
+                <div id="errorMessage" class="error-message"></div>
+
+                <input type="submit" class="btn btn-sign" id="submitButton1" value="Submit">
+
+            </form>
+            <form id="form-register"   action="/register" method="post">
+                <div class="form-group">
+                    <label for="form-username2">Username:</label>
+                    <input type="text" id="form-username2"  name="username" placeholder="Username" class="form-control" required>
+                </div>
+                <div class="form-group ">
+                    <label for="form-mail">Mail:</label>
+                    <input type="text" id="form-mail" class="form-control" placeholder="Mail" oninput="checkEmail()"  required>
+                    <p id="result"></p>
+                </div>
+                <div class="form-group">
+                    <label for="form-password">Password:</label>
+                    <input type="password" id="form-password2"  name="password" placeholder="Password" class="form-control" required>
+                </div>
+                <div class="form-group ">
+                    <label for="form-passwordRetype">Password retype:</label>
+                    <input type="password" id="form-passwordRetype" placeholder="Password retype" class="form-control" required>
+                </div>
+                <div id="messageContainer"></div>
+
+                <input type="submit" class="btn btn-sign" id="submitButton2" value="Submit">
+
+            </form>
+        </div>
+    </div>
+
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <!-- bootstrap js -->
+    <script src="js/bootstrap.js"></script>
+    <!-- nice select -->
+
+
+    <!-- datepicker -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
+
+    <script>
+        const formLogin = document.getElementById('form-login');
+        
+        const formRegister = document.getElementById('form-register');
+        const submitButton = document.querySelectorAll('.btn-sign');
+        const btnSign = document.getElementById('signin-button'); 
+        const btnRegis = document.getElementById('register-button'); 
+        const email = document.getElementById("form-mail");
+
+        const submitForm = (action) => {
+            
+            if(action == 'signin') {
+                const signIn = () => {
+                    const username = document.getElementById('username').value;
+                    const password = document.getElementById('password').value;
+                };
+            }
+
+            else{
+                const register = () => {
+                    const username = document.getElementById('form-username2').value;
+                    const password = document.getElementById('form-password2').value;
+                    const confirmPassword = document.getElementById('confirm-password').value;
+                    console.log("RE")
+                    if (password !== confirmPassword) {
+                        alert('Passwords do not match. Please enter matching passwords.');
+                        return;
+                    }
+                };  
+            }
+        }
+
+        // xậy hiện bảng sign in or register
+        function toggleAuthForm(action){
+            actionForm = action;
+
+
+
+
+
+            if (action === 'signin') {
+                formLogin.style.display = 'block';
+                btnSign.style.backgroundColor = " var(--primary-color)"
+                btnRegis.style.backgroundColor= " #3498db"
+
+                formRegister.style.display = 'none';
+
+                
+
+            } else if (action === 'register') {
+                formLogin.style.display = 'none';
+
+                btnSign.style.backgroundColor= "  #4caf50"
+                btnRegis.style.backgroundColor = " var(--primary-color)"
+             
+                formRegister.style.display = 'block';
+
+            }
+
+            submitButton.setAttribute('onclick', `submitForm('${action}')`);
+            
+            
+        };
+
+
+
+        function checkEmail() {
+            // Lấy giá trị từ ô nhập
+
+            // Biểu thức chính quy để kiểm tra định dạng email
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            // Kiểm tra định dạng email và hiển thị kết quả
+            var resultElement = document.getElementById("result");
+
+            email.addEventListener("blur", function() {
+                if (emailRegex.test(email.value)) {
+                resultElement.className = "valid";
+                resultElement.innerText = "";
+                } else {
+                resultElement.className = "invalid";
+                resultElement.innerText = "Địa chỉ email không hợp lệ.";
+                }
+            });
+
+        }
+
+
+
+        const errorMessage = document.getElementById('errorMessage');
+
+        formLogin.addEventListener('submit', async function(event) {
+            // Ngăn chặn việc gửi form mặc định
+            event.preventDefault();
+
+            // Lấy thông tin đăng nhập từ form
+            // const username = document.getElementById('form-username1').value;
+            // const password = document.getElementById('form-password1').value;
+
+            let date = {
+                username: document.getElementById('form-username1').value,
+                password: document.getElementById('form-password1').value
+            }
+            $.ajax({
+                type: "POST",
+                url: "/login-check",
+                data:date ,
+                success: function(response) {
+                    console.log(response);
+                    if(response){
+                        window.location.href = '/person';
+
+                    }
+                    else{
+                        errorMessage.textContent = 'Thông tin đăng nhập sai, vui lòng thử lại';
+                        alert('Thông tin đăng nhập sai, vui lòng thử lại')
+                    }
+                },
+                    error: function(error) {
+                    console.error('Error:', error);
+                },
+                // complete: function(response) {
+                //     alert('Gửi thông tin thành công');
+                // }
+            });
+
+            
+        });
+    
+    
+        let a;
+            
+        formRegister.addEventListener('submit', async function(event){
+            let check = false;
+            event.preventDefault();
+
+            const username = document.getElementById('form-username2').value;
+            const password = document.getElementById('form-password2').value;
+            const confirmPassword = document.getElementById('form-passwordRetype').value;
+
+
+
+            if (password !== confirmPassword) {
+                $('#messageContainer').html('<p>Mật khẩu lần 2 không khớp. Vui lòng kiểm tra lại.</p>');
+            }
+            else{
+                if (password.length >= 6) {
+                check = true;
+                } else {
+                    $('#messageContainer').html('<p>Mật khẩu tối thiểu 6 chữ số.</p>');
+                }
+
+            }
+            const email1 = email.value;
+            console.log(email1);
+            const formData = {
+                username: username,
+                password: password,
+                email: email1 // Điền giá trị email từ biểu mẫu (nếu có)
+            };
+            if(check) {
+                fetch('/options')
+                .then(response => response.json())
+                .then(data => {
+                    let a=true;
+                    data.forEach(element => {
+                        if(element[`UserName`]==username){
+
+                            a=false
+                        }
+                    });
+                    if(a){
+                        $.ajax({
+                        type: "POST",
+                        url: "/register",
+                        data: formData,
+                        success: function(response) {
+                            // Hiển thị thông báo dựa vào phản hồi từ server
+                            $('#messageContainer').html('<p>' + response + '</p>');
+                        },
+                            error: function(error) {
+                            console.log('Error:', error);
+                        },
+                        // complete: function(response) {
+                        //     alert('Gửi thông tin thành công');
+                        // }
+                        });
+                    }
+                    else{
+                        $('#messageContainer').html('<p>Tên tài khoản đã tồn tại, vui lòng thử lại.</p>');
+
+                    }
+                })
+                .catch(error => console.log('Error fetching options:', error));
+            }
+
+
+
+
+
+        })
+
+
+        
+    
+    </script>
+  
+
+   
+
+</body>
+</html>

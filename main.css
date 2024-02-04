@@ -423,6 +423,10 @@
   /*-----------------------------------*\
     #DOCTOR
   \*-----------------------------------*/
+
+  #doctor{
+    margin-top: 72px;
+  }
   
   .doctor .section-title { margin-block-end: 50px; }
   

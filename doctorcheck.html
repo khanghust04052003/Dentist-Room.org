@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedule Display</title>
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+  <link rel="stylesheet" href="./css/sign.css">
+
+  <link rel="stylesheet" href="./css/allin.css">
+
+</head>
+<body>
+  <div class="back-icon">
+    <a class="back_icon-wrap" href="javascript:history.go(-1)">
+        <i class="far fa-times-circle"></i>
+    </a>
+</div>
+<div id="content">
+  <div class="container" id="schedule_info">
+    <div class="row">
+      <div class="col col-m-12">
+        <h2 id="header_patient">Schedule for Next 7 Days</h2>
+    
+          <table id="table_doctor">
+            <thead>
+              <tr>
+                <th>Day</th>
+                <th>8h</th>
+                <th>9h</th>
+                <th>10h</th>
+                <th>13h</th>
+                <th>14h</th>
+                <th>15h</th>
+              </tr>
+            </thead>
+            <tbody id="scheduleBody"></tbody>
+          </table>
+      </div>
+    </div>
+  
+  </div>
+  
+  <div class="container" id="info_patient">
+  
+    <div class="row">
+      <div class="col">
+        <h2>Patient Information</h2>
+        <table id="table_patient">
+          <thead>
+            <tr>
+                <th></th>
+                <th>Full Name</th>
+                <th>Birthday</th>
+                <th>Phone Number</th>
+                <th>Email</th>
+  
+            </tr>
+        </thead>
+        <tbody >
+          <tr id="info">
+              <td>Info:</td>
+  
+          </tr>
+        </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+  <div class="container" id="info_medi">
+  
+    <div class="row">
+      <div class="col">
+        <h2>Examination Results</h2>
+        <form id="form-medi" action="/post-medi" method="post"  >
+          <div class="form-group">
+              <label for="disease">Disease Name</label>
+              <input type="text" id="disease"  name="disease" placeholder="disease" class="form-control" required>
+          </div>
+  
+          <div class="form-group">
+            <label for="medicine">Medicine Name</label>
+            <input type="text" id="medicine"  name="medicine" placeholder="medicine" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="dosage">Dosage</label>
+          <input type="text" id="dosage"  name="dosage" placeholder="dosage" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="price">Price</label>
+          <input type="text" id="price"  name="price" placeholder="price" class="form-control" required>
+        </div>
+  
+  
+          <div id="errorMessage" class="error-message"></div>
+  
+          <input type="button" class="btn btn-submit" onclick="submitForm()" value="Submit">
+  
+      </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" id="doctor_app_pan">
+
+    <h2>Input Patient To Appointment</h2>
+    <form action="/post-app-doctor" method="post">
+      <div class="form-group select_check">
+
+        <input type="text" class="search_input-name" placeholder="Tìm kiếm...">
+          <div class="select-options">
+          </div>
+  
+        </div>
+  
+  
+  
+      <input type="button" class="btn btn-submit" onclick="handleAppPatient(this)" value="Submit">
+    </form>
+
+
+</div>
+  <!-- jQery -->
+  <script src="js/jquery-3.4.1.min.js"></script>
+<script src="js/bootstrap.js"></script>
+<!-- nice select -->
+<script>
+  const info_medi = document.getElementById('info_medi');
+  const doctor_app_pan = document.getElementById('doctor_app_pan');  
+  const table_patient = document.getElementById('info_patient');
+  const selectOption = document.querySelector('.select-options')
+  const form_medi = document.getElementById('form-medi');
+  const customSelect = document.querySelector('.select_check');
+  const searchInput = customSelect.querySelector('.search_input-name');
+  let timedate = ['8h','9h','10h','13h','14h','15h']
+
+  var a;// lưu id bệnh nhân
+
+  var elementClick;// lưu element vừa trỏ
+  document.addEventListener('DOMContentLoaded', function () {
+    // Lấy ngày hiện tại
+    const currentDate = new Date();
+
+    // Tạo một bảng lịch cho 7 ngày tiếp theo
+    for (let i = 0; i < 7; i++) {
+      const row = document.createElement('tr');
+      const date = new Date(currentDate);
+      date.setDate(currentDate.getDate() + i -1);
+
+      // Hiển thị ngày
+      const dayCell = document.createElement('td');
+      dayCell.textContent = formatDate(date);
+      dayCell.id = formatDate(date);
+      row.appendChild(dayCell);
+
+      // Hiển thị các khung giờ
+      const timeSlots = ['8h', '9h', '10h', '13h', '14h', '15h'];
+      for (const timeSlot of timeSlots) {
+        const cell = document.createElement('td');
+        // Có thể thêm logic khác ở đây để xử lý nếu cần
+        cell.textContent = ''; // Đặt nội dung mặc định
+        cell.setAttribute("onclick", "handleClick(this)");
+        cell.className = 'check';
+        row.appendChild(cell);
+      }
+
+      // Thêm hàng vào bảng
+      document.getElementById('scheduleBody').appendChild(row);
+    }
+    
+    fetch(`/get-info-app`)
+      .then(response => response.json())
+      .then(data => {
+        for (let i = 0; i < data.length; i++) {
+          
+            let date = formatDate(data[i][`Appoint Date`]);
+            const dateCell = document.getElementById(`${date}`); // +1 vì chỉ số 0 là tiêu đề ngày
+            var parentElement = dateCell.parentNode;
+            for(let j = 0; j < data.length; j++) {
+                if(data[i][`Start Time`] == timedate[j] ){
+                let Child = parentElement.children[j+1];
+                Child.style.background = 'green';
+                Child.id = `${data[i][`Patient ID`]}`;
+            }
+            }
+
+        }
+
+    })
+    .catch(error => console.log('Error:', error));
+
+
+});
+  function handleClick(element) {
+    // Lấy id của bệnh nhân
+    var elementId = parseInt(element.id, 10);
+    fetch(`/get-patient-app`)
+      .then(response => response.json())
+      .then(data => {
+        let cout = 0;
+        data.forEach(patient => {
+          let id;
+          id = patient[`Patient ID`];
+          if(id == elementId){
+            cout++;
+            a=id;
+            console.log(a);
+
+            const info = document.getElementById('info'); 
+            info.innerHTML="<td>Info:</td>";
+            table_patient.style.display = 'block'
+            info_medi.style.display = 'block';
+            doctor_app_pan.style.display = 'none'; 
+            if(elementClick!=undefined){
+              elementClick.style.backgroundColor = 'white';
+            }
+
+
+            let patient_key = ['Full Name','Birth','Phone Number','email']
+            for (var key in patient) {
+              for(let i = 0; i < patient_key.length;i++){
+                if (key == patient_key[i]) {
+                  if(key == 'Birth'){
+                  var value = formatDate(patient[key])
+                  const Cell_info= document.createElement('td');
+                  Cell_info.textContent = value;
+                  info.appendChild(Cell_info);
+                  }else{
+                    var value = patient[key]
+                    const Cell_info= document.createElement('td');
+                    Cell_info.textContent = value;
+                    info.appendChild(Cell_info);
+                  }
+                }
+              }
+            }
+          }
+        });
+
+        if(cout==0){
+          doctor_app_pan.style.display = 'block'; 
+          table_patient.style.display = 'none'
+          info_medi.style.display = 'none';
+          if(elementClick!=undefined){
+            elementClick.style.backgroundColor = 'white';
+          }
+          elementClick=element;
+
+          element.style.backgroundColor = 'hsl(219, 29%, 24%)';
+          data.forEach(patient =>{
+            const op = document.createElement('div'); 
+            op.innerHTML = `${patient[`Full Name`]} - ${patient[`Phone Number`]}`
+            op.id = patient[`Patient ID`];
+            selectOption.appendChild(op);
+          })
+          handleInput()
+        }
+      })
+    .catch(error => console.log('Error:', error));
+
+      return element.id;
+  
+  }
+
+
+  // Hàm chuyển định dạng ngày thành chuỗi 'YYYY-MM-DD'
+  function formatDate(date) {
+
+
+
+    let mysqlDateString = date;
+
+    // Tạo một đối tượng Date từ chuỗi
+    let dateObject = new Date(mysqlDateString);
+
+    // Lấy thông tin ngày, tháng, năm
+    let year = dateObject.getFullYear();
+    let month = (dateObject.getMonth() + 1).toString().padStart(2, '0'); // Thêm '0' phía trước nếu cần
+    let day = dateObject.getDate().toString().padStart(2, '0'); // Thêm '0' phía trước nếu cần
+
+    // Tạo chuỗi mới theo định dạng "yyyy-MM-dd"
+    return `${year}-${month}-${day}`;   
+  }
+
+ 
+
+
+    function submitForm(){
+      event.preventDefault();
+      let formData1 = {
+        disease: document.getElementById('disease').value,
+        medicine: document.getElementById('medicine').value,
+        dosage:document.getElementById('dosage').value,
+        price: document.getElementById('price').value,
+        id_patient:a
+        }
+        console.log(formData1);
+        $.ajax({
+            type: 'POST',
+            url: '/post-medi',
+            data: formData1,
+            success: function(data) {
+              console.log(data);
+              alert(data);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('There has been a problem with your AJAX request:', errorThrown);
+            }
+        });
+        form_medi.submit();
+      }
+
+
+    function handleInput(){
+
+      var selectOptions = customSelect.querySelector('.select-options').querySelectorAll('div');
+
+      searchInput.addEventListener('input', function() {
+        var searchTerm = searchInput.value.toLowerCase();
+
+        selectOptions.forEach(function(option) {
+          var text = option.innerText.toLowerCase();
+          if (text.includes(searchTerm)) {
+            option.style.display = 'block';
+          } else {
+            option.style.display = 'none';
+          }
+        });
+      });
+      customSelect.addEventListener('click', function(event) {
+        event.stopPropagation();
+        customSelect.classList.toggle('active');
+      });
+
+      document.addEventListener('click', function(event) {
+        var isInsideCustomSelect = customSelect.contains(event.target);
+        if (!isInsideCustomSelect) {
+          customSelect.classList.remove('active');
+        }
+      });
+
+
+      selectOptions.forEach(function(option) {
+        option.addEventListener('click', function() {
+          searchInput.value = option.innerText;
+          searchInput.id = option.id;
+
+          customSelect.classList.remove('active');
+          // Xóa giá trị của input để đảm bảo là option sẽ không bị giữ lại
+          searchInput.dispatchEvent(new Event('input'));
+        });
+      });
+    }
+    
+
+    function handleAppPatient(ele){
+      let value = parseInt(searchInput.id, 10);
+      let farther = elementClick.parentElement;
+      let date = farther.firstElementChild.id;
+      //xác đinh elementClick là element thứ mấy trong farther
+      var childIndex = Array.from(farther.children).indexOf(elementClick) ;
+      let time = timedate[childIndex-1]
+      var DataInput = {
+          inputSymptoms: time,
+          inputTimeDay: date,
+          inputID : value
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/post-app-doctor',
+            data: DataInput,
+            success: function(data) {
+              console.log(data);
+              alert(data);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('There has elementClickeen a problem with your AJAX request:', errorThrown);
+            }
+        });
+      }
+</script>
+
+
+
+</body>
+</html>

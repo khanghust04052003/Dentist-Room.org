@@ -1,0 +1,62 @@
+.doctor_section{
+    background-color: white;
+}
+
+.doctor_section .container{
+    box-shadow: 0 0 2px 1px var(--primary-color);
+    padding: 10px 20px 70px 20px;
+    border-radius: 4px;
+}
+.doctor_section .heading_container{
+    margin-bottom: 64px;
+    
+}
+
+.doctor_section .heading_container h2 span{
+    color:var(--primary-color);
+    
+}
+
+.book_section{
+    background-color:var(--primary-color) ;
+}
+
+.book_section .container{
+    background-color: var(--white-color);
+    padding: 0;
+}
+
+.doctor_section  img{
+    border-radius: 50%;
+}
+.doctor_section img:hover {
+    box-shadow: 0 0 2px 1px var(--primary-color);
+    cursor: pointer;
+}
+
+.doctor_info-back{
+    color: var(--primary-color);  
+    font-size: 18px;  
+    line-height: 2;
+}
+
+.doctor_back-name{
+    
+}
+
+#inputTimeDay{
+
+
+}
+
+.nice-select {
+    text-align: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.input_form{
+    text-align: left;
+    align-items: center;
+    padding: 5px 20px;
+}
